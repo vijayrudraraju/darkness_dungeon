@@ -4,14 +4,14 @@ import 'package:flame/animation.dart' as FlameAnimation;
 
 class Knight extends Player {
 
-  static const double SIZE = 64;
+  static const double SIZE = 32;
   final Function callBackdie;
   final double initX;
   final double initY;
   final Function(double) changeLife;
   final Function(double) changeStamina;
 
-  Knight(Size screenSize, {this.callBackdie, this.changeLife, this.changeStamina, this.initX = 0.0, this.initY = 0.0}):super(
+  Knight(Size screenSize, {this.callBackdie, this.changeLife, this.changeStamina, this.initX = 0.0, this.initY = 0.0}) : super(
       SIZE,
       screenSize,
       Rect.fromLTWH(initX*SIZE, initY*SIZE, SIZE, SIZE),

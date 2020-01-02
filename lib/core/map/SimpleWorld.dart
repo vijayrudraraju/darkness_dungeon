@@ -7,18 +7,9 @@ import 'package:flutter/material.dart';
 
 class SimpleWorld extends SpriteComponent {
 
-  static const double INIT_PADDING_LEFT = 30;
-  static const double INIT_PADDING_TOP = 50;
-
   List<List<TileMap>> map;
   final Size initSize;
   final Player player;
-
-  double maxTop = INIT_PADDING_TOP;
-  double maxLeft = INIT_PADDING_LEFT;
-
-  bool maxRight = false;
-  bool maxBottom = false;
 
   List<TileMap> tilesMap = List();
   List<Rect> collisionsRect = List();

@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class Controller extends PositionComponent {
-
-  double backgroundAspectRatio = 2.2;
   Sprite backgroundSprite;
+  double backgroundRadius = 38;
+
   Rect upRect;
   Rect downRect;
   Rect leftRect;
   Rect rightRect;
 
-  double atackAspectRatio = 2.5;
   Rect atackRect;
   Sprite atackSprite;
+  double attackRadius = 50;
 
   final double tileSize;
   final Size screenSize;
@@ -24,6 +24,7 @@ class Controller extends PositionComponent {
   final Function() moveBottom;
   final Function() moveLeft;
   final Function() moveRight;
+
   final Function() idle;
   final Function() atack;
 
@@ -42,24 +43,24 @@ class Controller extends PositionComponent {
     //Button Atack
     atackRect = Rect.fromCircle(
       center: Offset(295, 580),
-      radius: 70,
+      radius: attackRadius,
     );
 
     upRect = Rect.fromCircle(
       center: Offset(95, 510),
-      radius: 30
+      radius: backgroundRadius
     );
     downRect = Rect.fromCircle(
       center: Offset(95, 620),
-      radius: 30
+      radius: backgroundRadius
     );
     leftRect = Rect.fromCircle(
       center: Offset(40, 565),
-      radius: 30
+      radius: backgroundRadius
     );
     rightRect = Rect.fromCircle(
       center: Offset(150, 565),
-      radius: 30
+      radius: backgroundRadius
     );
  }
 

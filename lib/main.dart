@@ -13,11 +13,12 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-const double DEFAULT_SIZE = 64;
-const int DEFAULT_WIDTH = 5;
+const double DEFAULT_SIZE = 32;
+const int ROWS = 16;
+const int COLS = 6;
 Size initSize = Size(
-  DEFAULT_SIZE*DEFAULT_WIDTH,
-  DEFAULT_SIZE*DEFAULT_WIDTH
+  DEFAULT_SIZE * COLS,
+  DEFAULT_SIZE * ROWS
 );
 
 void main() async {
@@ -47,12 +48,6 @@ class _GameWidgetState extends State<GameWidget> {
   @override
   void initState() {
     print("_GameWidgetState->initState() - widget.size:${widget.size}");
-
-    Size initSize = Size(
-      DEFAULT_SIZE*DEFAULT_WIDTH,
-      DEFAULT_SIZE*DEFAULT_WIDTH
-    );
-
     print("_GameWidgetState->initState() - initSize:$initSize");
 
     game = DarknessDungeon(
@@ -237,8 +232,8 @@ class DarknessDungeon extends BaseGame {
       player,
       size,
     );
-    map.x = 30;
-    map.y = 30;
+    map.x = 170;
+    map.y = 15;
 
     controller = Controller(
       size,

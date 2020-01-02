@@ -6,14 +6,16 @@ import 'package:flutter/material.dart';
 
 class TileMap {
 
-  static const double DEFAULT_SIZE = 64;
+  static const double DEFAULT_SIZE = 32;
 
   final String spriteImg;
   final bool collision;
   final Enemy enemy;
   final TileDecoration decoration;
+
   Rect position;
   Sprite _spriteTile;
+
   final double size;
 
   TileMap(this.spriteImg,{this.collision = false,this.enemy,this.decoration,this.size = TileMap.DEFAULT_SIZE}) {

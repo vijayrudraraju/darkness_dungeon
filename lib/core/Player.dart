@@ -7,6 +7,7 @@ import 'package:darkness_dungeon/core/ObjectCollision.dart';
 import 'package:darkness_dungeon/core/map/MapWord.dart';
 import 'package:darkness_dungeon/core/AnimationGameObject.dart';
 import 'package:flutter/material.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/animation.dart' as FlameAnimation;
 
 class Player extends AnimationGameObject with ObjectCollision {
@@ -79,9 +80,12 @@ class Player extends AnimationGameObject with ObjectCollision {
     initPosition = position;
     this.position = position;
     print("Player(...) - this.position:${this.position}");
+
     animation = animationIdle;
     widthCollision = position.width;
     heightCollision = position.height/2;
+
+    Flame.audio.loadAll(["kick.wav", "snare.wav"]);
   }
 
   @override
@@ -127,6 +131,8 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToBottom() {
+    Flame.audio.play("kick.wav");
+
     if (life == 0) {
       return;
     }
@@ -154,6 +160,8 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToLeft() {
+    Flame.audio.play("snare.wav");
+
     if (life == 0) {
       return;
     }
@@ -179,6 +187,8 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToRight() {
+    Flame.audio.play("snare.wav");
+
     if (life == 0) {
       return;
     }
