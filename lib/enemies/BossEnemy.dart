@@ -27,7 +27,7 @@ class BossEnemy extends Enemy{
   void updateEnemy(double t, Player player, double mapPaddingLeft, double mapPaddingTop, List<Rect> collisionsMap) {
 
     moveToHero(player, (){
-      player.recieveAtack(randomic(DAMAGE));
+      player.receiveAttack(randomic(DAMAGE));
     });
 
     super.updateEnemy(t, player,mapPaddingLeft,mapPaddingTop,collisionsMap);

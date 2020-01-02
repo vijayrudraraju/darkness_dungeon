@@ -4,9 +4,9 @@ import 'package:darkness_dungeon/core/Enemy.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 
-class TileMap{
+class TileMap {
 
-  static const double DEFAULT_SIZE = 16;
+  static const double DEFAULT_SIZE = 64;
 
   final String spriteImg;
   final bool collision;

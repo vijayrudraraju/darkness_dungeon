@@ -11,10 +11,16 @@ import 'package:flame/animation.dart' as FlameAnimation;
 
 class Player extends AnimationGameObject with ObjectCollision {
 
+  static const double INIT_PADDING_LEFT = 0;
+  static const double INIT_PADDING_TOP = 0;
+
   double life;
-  MapControll _mapControll;
+
+  MapControll _mapControl;
+
   double stamina = 100;
   double costStamina = 15;
+
   final double size;
   final double damageAtack;
   final Size screenSize;
@@ -22,6 +28,7 @@ class Player extends AnimationGameObject with ObjectCollision {
   final Function(double) changeLife;
   final Function(double) changeStamina;
   final Function callBackdie;
+
   final FlameAnimation.Animation animationIdle;
   final FlameAnimation.Animation animationIdleLeft;
   final FlameAnimation.Animation animationMoveLeft;
@@ -33,12 +40,16 @@ class Player extends AnimationGameObject with ObjectCollision {
   final FlameAnimation.Animation animationAtackRight;
   final FlameAnimation.Animation animationAtackTop;
   final FlameAnimation.Animation animationAtackBottom;
+
   AnimationGameObject atackObject = AnimationGameObject();
+
   Direction lasDirection = Direction.right;
   Direction lasDirectionHotizontal = Direction.right;
+
   Timer _timerStamina;
   bool notifyDie = false;
   Rect initPosition;
+
   List<Enemy> _enemies = List();
 
   Player(
@@ -67,6 +78,7 @@ class Player extends AnimationGameObject with ObjectCollision {
       ){
     initPosition = position;
     this.position = position;
+    print("Player(...) - this.position:${this.position}");
     animation = animationIdle;
     widthCollision = position.width;
     heightCollision = position.height/2;
@@ -80,8 +92,8 @@ class Player extends AnimationGameObject with ObjectCollision {
     }
   }
 
-  void setMapControll(MapControll mapControll){
-    _mapControll = mapControll;
+  void setMapControll(MapControll mapControl){
+    _mapControl = mapControl;
   }
 
   void updatePlayer(double dt, List<Rect> collisionsMap, List<Enemy> enemies, List<TileDecoration> decorations) {
@@ -92,12 +104,11 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToTop() {
-
     if (life == 0) {
       return;
     }
 
-    if (position.top <= 0) {
+    if (position.top <= INIT_PADDING_TOP) {
       return;
     }
 
@@ -106,15 +117,9 @@ class Player extends AnimationGameObject with ObjectCollision {
       return;
     }
 
-    if (position.top > screenSize.height / 3 || _mapControll.isMaxTop()) {
-      position = displacement;
-    } else {
-      _mapControll.moveTop(speedPlayer);
-    }
+    position = displacement;
 
-
-
-    if(animationMoveTop != null && lasDirection != Direction.top){
+    if (animationMoveTop != null && lasDirection != Direction.top) {
       lasDirection = Direction.top;
       animation = animationMoveTop;
       atackObject.animation = null;
@@ -122,7 +127,6 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToBottom() {
-
     if (life == 0) {
       return;
     }
@@ -132,15 +136,14 @@ class Player extends AnimationGameObject with ObjectCollision {
     }
 
     Rect displacement = position.translate(0, speedPlayer);
+    //print("moveToBottom() - displacement.bottom:${displacement.bottom}");
+    //print("moveToBottom() - position.top:${position.top}");
+    //print("moveToBottom() - position.bottom:${position.bottom}");
     if (verifyCollisionRect(displacement)) {
       return;
     }
 
-    if (position.top < screenSize.height / 1.5 || _mapControll.isMaxBottom()) {
-      position = displacement;
-    } else {
-      _mapControll.moveBottom(speedPlayer);
-    }
+    position = displacement;
 
     if(animationMoveBottom != null && lasDirection != Direction.bottom){
       lasDirection = Direction.bottom;
@@ -151,12 +154,11 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToLeft() {
-
     if (life == 0) {
       return;
     }
 
-    if (position.left <= 0) {
+    if (position.left <= INIT_PADDING_LEFT) {
       return;
     }
 
@@ -165,11 +167,7 @@ class Player extends AnimationGameObject with ObjectCollision {
       return;
     }
 
-    if (position.left > screenSize.width / 3 || _mapControll.isMaxLeft()) {
-      position = displacement;
-    } else {
-      _mapControll.moveLeft(speedPlayer);
-    }
+    position = displacement;
 
     lasDirectionHotizontal = Direction.left;
 
@@ -181,7 +179,6 @@ class Player extends AnimationGameObject with ObjectCollision {
   }
 
   void moveToRight() {
-
     if (life == 0) {
       return;
     }
@@ -195,11 +192,7 @@ class Player extends AnimationGameObject with ObjectCollision {
       return;
     }
 
-    if (position.left < screenSize.width / 1.5 || _mapControll.isMaxRight()) {
-      position = displacement;
-    } else {
-      _mapControll.moveRight(speedPlayer);
-    }
+    position = displacement;
 
     lasDirectionHotizontal = Direction.right;
 
@@ -208,187 +201,6 @@ class Player extends AnimationGameObject with ObjectCollision {
       animation = animationMoveRight;
       atackObject.animation = null;
     }
-  }
-
-  void runTopRight(){
-    if (life == 0) {
-      return;
-    }
-
-    if (position.left >= screenSize.width) {
-      return;
-    }
-
-    if (position.top <= 0) {
-      return;
-    }
-
-    Rect displacementRight = position.translate(speedPlayer,0);
-
-    if (!verifyCollisionRect(displacementRight)) {
-
-      if (position.left < screenSize.width / 1.5 || _mapControll.isMaxRight()) {
-        position = displacementRight;
-      } else {
-        _mapControll.moveRight(speedPlayer);
-      }
-
-      if(animationMoveRight != null){
-        animation = animationMoveRight;
-      }
-
-    }
-
-    Rect displacementTop = position.translate(0,(-1 *speedPlayer));
-
-    if (!verifyCollisionRect(displacementTop)) {
-
-      if (position.top > screenSize.height / 3 || _mapControll.isMaxTop()) {
-        position = displacementTop;
-      } else {
-        _mapControll.moveTop(speedPlayer);
-      }
-
-      if(animationMoveRight != null){
-        animation = animationMoveRight;
-      }
-    }
-
-  }
-
-  void runTopLeft(){
-    if (life == 0) {
-      return;
-    }
-
-    if (position.left <= 0) {
-      return;
-    }
-
-    if (position.top <= 0) {
-      return;
-    }
-
-    Rect displacementLeft = position.translate((-1 *speedPlayer), 0);
-
-    if (!verifyCollisionRect(displacementLeft)) {
-      if (position.left > screenSize.width / 1.5
-          || _mapControll.isMaxLeft()) {
-        position = displacementLeft;
-      } else {
-        _mapControll.moveLeft(speedPlayer);
-      }
-      if(animationMoveLeft != null){
-        animation = animationMoveLeft;
-      }
-    }
-
-    Rect displacementTop = position.translate(0, (-1 *speedPlayer));
-
-    if (!verifyCollisionRect(displacementTop)) {
-      if (position.top > screenSize.height / 3 || _mapControll.isMaxTop()) {
-        position = displacementTop;
-      } else {
-        _mapControll.moveTop(speedPlayer);
-      }
-
-      if(animationMoveLeft != null){
-        animation = animationMoveLeft;
-      }
-    }
-
-  }
-
-  void runBottomLeft(){
-    //print('runBottomLeft');
-    if (life == 0) {
-      return;
-    }
-
-    if (position.left <= 0) {
-      return;
-    }
-
-    if (position.bottom >= screenSize.height) {
-      return;
-    }
-
-    Rect displacementLeft = position.translate((-1 *speedPlayer), 0);
-
-    if (!verifyCollisionRect(displacementLeft)) {
-
-      if (position.left > screenSize.width / 1.5 || _mapControll.isMaxLeft()) {
-        position = displacementLeft;
-      } else {
-        _mapControll.moveLeft(speedPlayer);
-      }
-
-      if(animationMoveLeft != null){
-        animation = animationMoveLeft;
-      }
-    }
-
-    Rect displacementBottom = position.translate(0, speedPlayer);
-
-    if (!verifyCollisionRect(displacementBottom)) {
-      if (position.top < screenSize.height / 1.5 || _mapControll.isMaxBottom()) {
-        position = displacementBottom;
-      } else {
-        _mapControll.moveBottom(speedPlayer);
-      }
-
-      if(animationMoveLeft != null){
-        animation = animationMoveLeft;
-      }
-    }
-
-  }
-
-  void runBottomRight(){
-
-    if (life == 0) {
-      return;
-    }
-
-    if (position.left >= screenSize.width) {
-      return;
-    }
-
-    if (position.top >= screenSize.height) {
-      return;
-    }
-
-    Rect displacementRight = position.translate(speedPlayer, 0);
-
-    if (!verifyCollisionRect(displacementRight)) {
-
-      if (position.left < screenSize.width / 1.5
-          || _mapControll.isMaxRight()) {
-        position = displacementRight;
-      } else {
-        _mapControll.moveRight(speedPlayer);
-      }
-
-      if(animationMoveRight != null){
-        animation = animationMoveRight;
-      }
-    }
-
-    Rect displacementBottom = position.translate(0, speedPlayer);
-
-    if (!verifyCollisionRect(displacementBottom)) {
-
-      if (position.top < screenSize.height / 1.5 || _mapControll.isMaxBottom()) {
-        position = displacementBottom;
-      } else {
-        _mapControll.moveBottom(speedPlayer);
-      }
-
-      if(animationMoveRight != null){
-        animation = animationMoveRight;
-      }
-    }
-
   }
 
   void idle(){
@@ -403,16 +215,16 @@ class Player extends AnimationGameObject with ObjectCollision {
     }
   }
 
-  void recieveAtack(double damage){
+  void receiveAttack(double damage){
     life = life - damage;
-    if (changeLife != null) {
-      changeLife(life);
-    }
     if (life < 0) {
       life = 0;
     }
     if (life == 0) {
       die();
+    }
+    if (changeLife != null && life != 0) {
+      changeLife(life);
     }
   }
 
@@ -439,7 +251,7 @@ class Player extends AnimationGameObject with ObjectCollision {
 
     stamina = stamina - costStamina;
 
-    if(changeStamina != null){
+    if (changeStamina != null) {
       changeStamina(stamina);
     }
 
@@ -481,7 +293,10 @@ class Player extends AnimationGameObject with ObjectCollision {
       if(stamina > 100){
         stamina = 100;
       }
-      changeStamina(stamina);
+
+      if (changeStamina != null) {
+        changeStamina(stamina);
+      }
     });
   }
 

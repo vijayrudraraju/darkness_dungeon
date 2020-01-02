@@ -4,25 +4,33 @@ import 'dart:async';
 import 'package:darkness_dungeon/Menu.dart';
 import 'package:darkness_dungeon/player/HealthBar.dart';
 import 'package:darkness_dungeon/core/Controller.dart';
-import 'package:darkness_dungeon/core/map/MapWord.dart';
-import 'package:darkness_dungeon/map/State1.dart';
+import 'package:darkness_dungeon/core/map/SimpleWorld.dart';
+import 'package:darkness_dungeon/map/Simple.dart';
 import 'package:darkness_dungeon/player/Knight.dart';
 import 'package:darkness_dungeon/core/Player.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flame/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
+const double DEFAULT_SIZE = 64;
+const int DEFAULT_WIDTH = 5;
+Size initSize = Size(
+  DEFAULT_SIZE*DEFAULT_WIDTH,
+  DEFAULT_SIZE*DEFAULT_WIDTH
+);
 
 void main() async {
-  await Flame.util.setLandscape();
+  //debugPaintSizeEnabled = true;
+  debugPaintPointersEnabled = true;
+  WidgetsFlutterBinding.ensureInitialized();
   await Flame.util.fullScreen();
   runApp(MaterialApp(
-    home: Menu(),
+    home: GameWidget(size: initSize,),
   ));
 }
-
+  
 class GameWidget extends StatefulWidget {
-
   final Size size;
 
   GameWidget({Key key, this.size}) : super(key: key);
@@ -32,21 +40,23 @@ class GameWidget extends StatefulWidget {
 }
 
 class _GameWidgetState extends State<GameWidget> {
-
   DarknessDungeon game;
   final GlobalKey<HealthBarState> healthKey = GlobalKey();
   StreamController<bool> streamProgress = StreamController();
 
   @override
   void initState() {
+    print("_GameWidgetState->initState() - widget.size:${widget.size}");
+
+    Size initSize = Size(
+      DEFAULT_SIZE*DEFAULT_WIDTH,
+      DEFAULT_SIZE*DEFAULT_WIDTH
+    );
+
+    print("_GameWidgetState->initState() - initSize:$initSize");
+
     game = DarknessDungeon(
-        widget.size,
-        changeLife: (damage){
-          healthKey.currentState.updateHealth(damage);
-        },
-        changeStamina: (stamina){
-          healthKey.currentState.updateStamina(stamina);
-        },
+        initSize,
         gameOver: (){
           _showDialogGameOver();
         },
@@ -66,13 +76,14 @@ class _GameWidgetState extends State<GameWidget> {
       body: Stack(
         children: <Widget>[
           game.widget,
+          /*
           Align(
             alignment: Alignment.topLeft,
             child: HealthBar(
                 key: healthKey
             ),
           ),
-          _buildProgress(),
+          */
           Row(
             children: <Widget>[
               Expanded(
@@ -156,7 +167,7 @@ class _GameWidgetState extends State<GameWidget> {
             color: Colors.black,
             child: Center(
               child: Text(
-                "Carregando...",
+                "Loading...",
                 style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Normal',
@@ -180,21 +191,38 @@ class _GameWidgetState extends State<GameWidget> {
 
 class DarknessDungeon extends BaseGame {
   Size size;
+
   final Function(double) changeLife;
   final Function(double) changeStamina;
   final Function() gameOver;
   final Function() loaded;
-  Player player;
-  MapWord map;
-  Controller controller;
-  bool loadedControl = false;
 
-  DarknessDungeon(this.size, {this.changeLife, this.changeStamina, this.gameOver, this.loaded}){
+  Player player;
+  SimpleWorld map;
+  Controller controller;
+
+  bool loadedControl = false;
+  static const double INIT_X = 0;
+  static const double INIT_Y = 0;
+
+  @override
+  bool debugMode() => true;
+
+  DarknessDungeon(
+    this.size, 
+    {
+      this.changeLife, 
+      this.changeStamina, 
+      this.gameOver, 
+      this.loaded
+    }
+  ) {
+    print("DarknessDungeon(...) - this.size:${this.size}");
 
     player = Knight(
         size,
-        initX: 3,
-        initY: 4,
+        initX: INIT_X,
+        initY: INIT_Y,
         changeLife: changeLife,
         changeStamina: changeStamina,
         callBackdie: (){
@@ -204,37 +232,32 @@ class DarknessDungeon extends BaseGame {
         }
     );
 
-    map = MapWord(
-      MyMaps.state1(size),
+    map = SimpleWorld(
+      MyMaps.mapOne(),
       player,
       size,
     );
+    map.x = 30;
+    map.y = 30;
 
     controller = Controller(
-        size,
-        size.height / 10,
-        player.moveToTop,
-        player.moveToBottom,
-        player.moveToLeft,
-        player.moveToRight,
-        player.idle,
-        player.runTopLeft,
-        player.runTopRight,
-        player.runBottomLeft,
-        player.runBottomRight,
-        player.atack
-    );
+      size,
+      size.height / 10,
+      player.moveToTop,
+      player.moveToBottom,
+      player.moveToLeft,
+      player.moveToRight,
+      player.idle,
+      player.atack
+  );
 
     add(map);
     add(controller);
   }
 
   void resetGame(){
-
     player.reset(3,3);
-
-    map.resetMap(MyMaps.state1(size));
-
+    //map.resetMap(MyMaps.mapOne());
   }
 
   @override

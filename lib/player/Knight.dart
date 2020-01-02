@@ -4,7 +4,7 @@ import 'package:flame/animation.dart' as FlameAnimation;
 
 class Knight extends Player {
 
-  static const double SIZE = 25;
+  static const double SIZE = 64;
   final Function callBackdie;
   final double initX;
   final double initY;
@@ -18,9 +18,9 @@ class Knight extends Player {
       FlameAnimation.Animation.sequenced("knight_idle.png", 6, textureWidth: 16, textureHeight: 16),
       damageAtack: 10,
       life: 100,
-      speedPlayer:2,
-      changeLife:changeLife,
-      changeStamina:changeStamina,
+      speedPlayer: SIZE,
+      changeLife: changeLife,
+      changeStamina: changeStamina,
       callBackdie: callBackdie,
       animationIdleLeft: FlameAnimation.Animation.sequenced("knight_idle_left.png", 6, textureWidth: 16, textureHeight: 16),
       animationMoveRight: FlameAnimation.Animation.sequenced("knight_run.png", 6, textureWidth: 16, textureHeight: 16),
