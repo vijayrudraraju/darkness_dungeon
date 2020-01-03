@@ -7,7 +7,7 @@ import 'package:darkness_dungeon/core/Util.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/animation.dart' as FlameAnimation;
 
-class GoblinEnemy extends Enemy{
+class GoblinEnemy extends Enemy {
 
   static const double SIZE = 20;
   static const double DAMAGE = 15;

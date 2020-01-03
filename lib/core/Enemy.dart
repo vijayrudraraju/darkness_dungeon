@@ -8,7 +8,7 @@ import 'package:darkness_dungeon/core/AnimationGameObject.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/animation.dart' as FlameAnimation;
 
-abstract class Enemy extends AnimationGameObject with ObjectCollision{
+abstract class Enemy extends AnimationGameObject with ObjectCollision {
 
   double life;
   double _maxlife;
@@ -64,6 +64,7 @@ abstract class Enemy extends AnimationGameObject with ObjectCollision{
     if(!_isSetPosition){
       _isSetPosition = true;
       this.position = Rect.fromLTWH(position.left, position.top, this.position.width, this.position.height);
+      _currentPosition = position;
     }
   }
 
